@@ -137,7 +137,7 @@ namespace hpp {
       /// \{
 
       /// Get a pointer to the parent joint (if any).
-      // DEPREC JointPtr_t parentJoint () const
+      JointPtr_t parentJoint () const;
 
       //DEPREC /// Add child joint
       //DEPREC /// \param joint child joint added to this one,

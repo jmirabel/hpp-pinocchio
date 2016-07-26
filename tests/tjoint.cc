@@ -147,12 +147,16 @@ BOOST_AUTO_TEST_CASE (joint)
       
       // Possibly some children are anchor, and then removed from Pinocchio
       BOOST_CHECK( jp->numberChildJoints()   <= jm->numberChildJoints() );
+      std::size_t iChildP = 0;
       for( unsigned int c=0; c<jm->numberChildJoints(); ++c )
         {
           hpp::model::JointPtr_t cm = jm->childJoint(c);
           if(dynamic_cast<hpp::model::JointAnchor *> (cm)) // is not an anchor
             continue;
           BOOST_CHECK ( hasChild(jp,cm->name()) );
+          hpp::pinocchio::JointPtr_t cp = jp->childJoint(c);
+          BOOST_CHECK ( cp->parentJoint()->index() == jp->index());
+          iChildP++;
         }
       
       BOOST_CHECK( jp->robot() == pinocchio );

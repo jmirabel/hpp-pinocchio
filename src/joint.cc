@@ -94,6 +94,13 @@ namespace hpp {
       return children.size();
     }
 
+    JointPtr_t  Joint::parentJoint () const
+    {
+      selfAssert();
+      if (model().parents[index()] == 0) return JointPtr_t ();
+      else return JointPtr_t (new Joint(devicePtr,model().parents[index()]));
+    }
+
     JointPtr_t  Joint::childJoint (std::size_t rank) const
     {
       selfAssert();

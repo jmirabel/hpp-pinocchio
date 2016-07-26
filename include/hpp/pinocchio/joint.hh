@@ -49,6 +49,7 @@ namespace hpp {
     class HPP_PINOCCHIO_DLLAPI Joint {
     public:
       typedef se3::Index Index;
+      typedef se3::JointModel JointModel;
 
       /// \name Construction and copy and destruction
       /// \{
@@ -284,7 +285,12 @@ namespace hpp {
         return jointIndex;
       }
 
-      se3::JointModel& jointModel()
+      JointModel& jointModel()
+      {
+        return model().joints[index()];
+      }
+
+      const JointModel& jointModel() const
       {
         return model().joints[index()];
       }

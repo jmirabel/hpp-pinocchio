@@ -41,7 +41,7 @@ hpp::pinocchio::DevicePtr_t hppPinocchio( bool withGeoms, bool withSrdf,
 
       if (withSrdf)
         se3::srdf::removeCollisionPairsFromSrdf
-          (pinocchio->model(), pinocchio->geomModel(), srdfFilename, false);
+          (pinocchio->model(), pinocchio->geomModel(), srdfFilename, true);
 
       pinocchio->createGeomData();
     }

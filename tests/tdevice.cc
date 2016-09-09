@@ -415,3 +415,11 @@ BOOST_AUTO_TEST_CASE (simpleDevice)
   pinocchio = hpp::pinocchio::humanoidSimple("1");
   pinocchio = hpp::pinocchio::humanoidSimple("2", false);
 }
+/* -------------------------------------------------------------------------- */
+BOOST_AUTO_TEST_CASE (urdfUtility)
+{
+  hpp::pinocchio::DevicePtr_t pinocchio
+    = hpp::pinocchio::Device::create ("ur5");
+  hpp::pinocchio::urdf::loadRobotModel (pinocchio,
+      "anchor", "ur_description", "ur5", "_gripper", "_gripper");
+}

@@ -53,16 +53,16 @@ BOOST_AUTO_TEST_CASE (testVectorSpace)
     vector_t diff (u1 - u2);
 
     LiegroupElement e1 (u1), e2 (u2);
-    BOOST_CHECK (e1.space ()->nq () == n);
-    BOOST_CHECK (e1.space ()->nv () == n);
-    BOOST_CHECK (e1.space ()->nq (0) == n);
-    BOOST_CHECK (e1.space ()->nv (0) == n);
-    BOOST_CHECK (e1. vector ().rows () == n);
-    BOOST_CHECK (e1. vector ().rows () == n);
-    BOOST_CHECK ((e1 + u2). vector ().size () == n);
-    BOOST_CHECK ((e1 - e2).size () == n);
-    BOOST_CHECK (((e1 + u2). vector () - sum).norm () < 1e-10);
-    BOOST_CHECK (((e1 - e2) - diff).norm () < 1e-10);
+    BOOST_CHECK_EQUAL (e1.space ()->nq (), n);
+    BOOST_CHECK_EQUAL (e1.space ()->nv (), n);
+    BOOST_CHECK_EQUAL (e1.space ()->nq (0), n);
+    BOOST_CHECK_EQUAL (e1.space ()->nv (0), n);
+    BOOST_CHECK_EQUAL (e1. vector ().rows (), n);
+    BOOST_CHECK_EQUAL (e1. vector ().rows (), n);
+    BOOST_CHECK_EQUAL ((e1 + u2). vector ().size (), n);
+    BOOST_CHECK_EQUAL ((e1 - e2).size (), n);
+    BOOST_CHECK_SMALL (((e1 + u2). vector () - sum).norm (), 1e-10);
+    BOOST_CHECK_SMALL (((e1 - e2) - diff).norm (), 1e-10);
   }
 }
 
@@ -74,17 +74,17 @@ BOOST_AUTO_TEST_CASE (testR3SO3)
   LiegroupSpacePtr_t R3xSO3 (LiegroupSpace::R3xSO3 ());
 
   // Test sizes
-  BOOST_CHECK (R3xSO3->nq () == 7);
-  BOOST_CHECK (R3xSO3->nv () == 6);
-  BOOST_CHECK (R3xSO3->nq (0) == 7);
-  BOOST_CHECK (R3xSO3->nv (0) == 6);
+  BOOST_CHECK_EQUAL (R3xSO3->nq (), 7);
+  BOOST_CHECK_EQUAL (R3xSO3->nv (), 6);
+  BOOST_CHECK_EQUAL (R3xSO3->nq (0), 7);
+  BOOST_CHECK_EQUAL (R3xSO3->nv (0), 6);
   // Test operator==
-  BOOST_CHECK (*(R3xSO3) == *(R3xSO3));
+  BOOST_CHECK_EQUAL (*(R3xSO3), *(R3xSO3));
   vector_t neutral (7); neutral << 0, 0, 0, 0, 0, 0, 1;
-  BOOST_CHECK (R3xSO3->neutral ().vector () == neutral);
+  BOOST_CHECK_EQUAL (R3xSO3->neutral ().vector (), neutral);
   LiegroupElement e (R3xSO3);
   e.setNeutral ();
-  BOOST_CHECK (e. vector () == neutral);
+  BOOST_CHECK_EQUAL (e. vector (), neutral);
 
   for (std::size_t i=0; i<100; ++i) {
     u1.setRandom ();
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE (testR3SO3)
 
     LiegroupElement e2 (e1 + velocity);
 
-    BOOST_CHECK (((e2 - e1) - velocity).norm () < 1e-10);
+    BOOST_CHECK_SMALL (((e2 - e1) - velocity).norm (), 1e-10);
 
     LiegroupElement e3 (u3, R3xSO3);
     velocity = e3 - e1;
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE (testR3SO3)
   LiegroupElement e5 (u5, R3xSO3);
 
   LiegroupElement e6 (e5 + velocity);
-  BOOST_CHECK ((e6. vector () - res).norm () < 1e-10);
+  BOOST_CHECK_SMALL ((e6. vector () - res).norm (), 1e-10);
 
   res << 0, 0, 0, 0, sqrt (2)/2, 0, sqrt (2)/2;
   velocity.setZero ();
@@ -132,16 +132,16 @@ BOOST_AUTO_TEST_CASE (testR3SO3)
   e5 = LiegroupElement (u5, R3xSO3);
 
   e6 = e5 + velocity;
-  BOOST_CHECK ((e6. vector () - res).norm () < 1e-10);
+  BOOST_CHECK_SMALL ((e6. vector () - res).norm (), 1e-10);
 }
 
 BOOST_AUTO_TEST_CASE (comparison)
 {
-  BOOST_CHECK (*(LiegroupSpace::Rn (3)) == *(LiegroupSpace::R3 ()));
-  BOOST_CHECK (*(LiegroupSpace::Rn (2)) == *(LiegroupSpace::R2 ()));
-  BOOST_CHECK (*(LiegroupSpace::Rn (1)) == *(LiegroupSpace::R1 ()));
-  BOOST_CHECK (*(LiegroupSpace::R2xSO2 ()) == *(LiegroupSpace::R2xSO2 ()));
-  BOOST_CHECK (*(LiegroupSpace::R3xSO3 ()) == *(LiegroupSpace::R3xSO3 ()));
+  BOOST_CHECK_EQUAL (*(LiegroupSpace::Rn (3)), *(LiegroupSpace::R3 ()));
+  BOOST_CHECK_EQUAL (*(LiegroupSpace::Rn (2)), *(LiegroupSpace::R2 ()));
+  BOOST_CHECK_EQUAL (*(LiegroupSpace::Rn (1)), *(LiegroupSpace::R1 ()));
+  BOOST_CHECK_EQUAL (*(LiegroupSpace::R2xSO2 ()), *(LiegroupSpace::R2xSO2 ()));
+  BOOST_CHECK_EQUAL (*(LiegroupSpace::R3xSO3 ()), *(LiegroupSpace::R3xSO3 ()));
 
   BOOST_CHECK (*(LiegroupSpace::Rn (3)) != *(LiegroupSpace::R2 ()));
   BOOST_CHECK (*(LiegroupSpace::R2 ()) != *(LiegroupSpace::Rn (3)));
@@ -164,18 +164,18 @@ BOOST_AUTO_TEST_CASE (multiplication)
   LiegroupSpacePtr_t sp (LiegroupSpace::Rn (10) * LiegroupSpace::R3 () *
                          LiegroupSpace::R3xSO3 ());
   vector_t n; n.resize (20); n.setZero (); n [19] = 1;
-  BOOST_CHECK (sp->nq () == 20);
-  BOOST_CHECK (sp->nv () == 19);
-  BOOST_CHECK (sp->nq (0) == 10);
-  BOOST_CHECK (sp->nv (0) == 10);
-  BOOST_CHECK (sp->nq (1) == 3);
-  BOOST_CHECK (sp->nv (1) == 3);
-  BOOST_CHECK (sp->nq (2) == 7);
-  BOOST_CHECK (sp->nv (2) == 6);
-  BOOST_CHECK (sp->name () == "R^10*R^3*R^3*SO(3)");
-  BOOST_CHECK (sp->neutral ().vector () == n);
-  BOOST_CHECK (sp->neutral ().space () == sp);
-  BOOST_CHECK (sp == sp->neutral ().space ());
+  BOOST_CHECK_EQUAL (sp->nq (), 20);
+  BOOST_CHECK_EQUAL (sp->nv (), 19);
+  BOOST_CHECK_EQUAL (sp->nq (0), 10);
+  BOOST_CHECK_EQUAL (sp->nv (0), 10);
+  BOOST_CHECK_EQUAL (sp->nq (1), 3);
+  BOOST_CHECK_EQUAL (sp->nv (1), 3);
+  BOOST_CHECK_EQUAL (sp->nq (2), 7);
+  BOOST_CHECK_EQUAL (sp->nv (2), 6);
+  BOOST_CHECK_EQUAL (sp->name (), "R^10*R^3*R^3*SO(3)");
+  BOOST_CHECK_EQUAL (sp->neutral ().vector (), n);
+  BOOST_CHECK_EQUAL (sp->neutral ().space (), sp);
+  BOOST_CHECK_EQUAL (sp, sp->neutral ().space ());
 }
 
 BOOST_AUTO_TEST_CASE (log_)
@@ -186,19 +186,19 @@ BOOST_AUTO_TEST_CASE (log_)
   for (std::size_t i=0; i<100; ++i) {
     u.setRandom ();
     LiegroupElement e (u, LiegroupSpace::Rn (n));
-    BOOST_CHECK (hpp::pinocchio::log (e) == u);
+    BOOST_CHECK_EQUAL (hpp::pinocchio::log (e), u);
   }
 
   LiegroupSpacePtr_t R6xSO3 (LiegroupSpace::R3 () * LiegroupSpace::R3xSO3 ());
   LiegroupElement e (R6xSO3); e.setNeutral ();
 
-  BOOST_CHECK (R6xSO3->nq () == 10);
-  BOOST_CHECK (R6xSO3->nv () == 9);
-  BOOST_CHECK (R6xSO3->nq (0) == 3);
-  BOOST_CHECK (R6xSO3->nv (0) == 3);
-  BOOST_CHECK (R6xSO3->nq (1) == 7);
-  BOOST_CHECK (R6xSO3->nv (1) == 6);
+  BOOST_CHECK_EQUAL (R6xSO3->nq (), 10);
+  BOOST_CHECK_EQUAL (R6xSO3->nv (), 9);
+  BOOST_CHECK_EQUAL (R6xSO3->nq (0), 3);
+  BOOST_CHECK_EQUAL (R6xSO3->nv (0), 3);
+  BOOST_CHECK_EQUAL (R6xSO3->nq (1), 7);
+  BOOST_CHECK_EQUAL (R6xSO3->nv (1), 6);
 
   vector_t zero (9); zero.setZero ();
-  BOOST_CHECK ((hpp::pinocchio::log (e) - zero).norm () < 1e-10);
+  BOOST_CHECK_SMALL ((hpp::pinocchio::log (e) - zero).norm (), 1e-10);
 }

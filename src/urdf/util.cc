@@ -16,6 +16,10 @@
 
 #include <hpp/pinocchio/urdf/util.hh>
 
+#include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
 #include <urdf_parser/urdf_parser.h>
 
 #include <hpp/fcl/mesh_loader/loader.h>
@@ -191,6 +195,31 @@ namespace hpp {
             (model, geomModel, srdf, verbose);
         }
 
+        void _loadCustomTags (const DevicePtr_t& robot,
+            std::string prefix,
+            std::istream& stream)
+        {
+          if (*prefix.rbegin() != '/') prefix += "/";
+
+          using namespace boost::property_tree;
+          ptree tree, empty;
+          read_xml (stream, tree);
+
+          BOOST_FOREACH(ptree::value_type &link, tree.get_child("robot", empty)) {
+            if (link.first != "link") continue;
+            std::string linkName = prefix + link.second.get<std::string> ("<xmlattr>.name");
+
+            BOOST_FOREACH(ptree::value_type &ch, link.second.get_child("convex_hulls", empty)) {
+              if (ch.first == "mesh") {
+                std::string filename = ch.second.get<std::string>("<xmlattr>.filename");
+                std::string ori_xyz = ch.second.get<std::string>("origin.<xmlattr>.xyz", "0 0 0");
+                std::string ori_rpy = ch.second.get<std::string>("origin.<xmlattr>.xyz", "0 0 0");
+                std::cout << linkName << " ch: " << filename << ' ' << ori_xyz << ' ' << ori_rpy << std::endl;
+              }
+            }
+          }
+        }
+
         template <bool srdfAsXmlString>
         void _loadModel (const DevicePtr_t& robot,
                         const FrameIndex&  baseFrame,
@@ -361,6 +390,9 @@ namespace hpp {
           std::istringstream urdfStream (urdfString);
           _loadModel <true> (robot, baseFrame, prefix, rootType,
               urdfTree, urdfStream, srdfString);
+
+          std::istringstream iss (urdfString);
+          _loadCustomTags (robot, prefix, iss);
         }
     } // end of namespace urdf.
   } // end of namespace pinocchio.

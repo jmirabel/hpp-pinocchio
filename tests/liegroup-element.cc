@@ -177,6 +177,8 @@ BOOST_AUTO_TEST_CASE (comparison)
   BOOST_CHECK (*(LiegroupSpace::Rn (1)) == *(LiegroupSpace::R1 ()));
   BOOST_CHECK (*(LiegroupSpace::R2xSO2 ()) == *(LiegroupSpace::R2xSO2 ()));
   BOOST_CHECK (*(LiegroupSpace::R3xSO3 ()) == *(LiegroupSpace::R3xSO3 ()));
+  BOOST_CHECK_EQUAL (*(LiegroupSpace::R3xSO3 ()),
+      *(LiegroupSpace::R3 () * LiegroupSpace::SO3 ()));
 
   BOOST_CHECK (*(LiegroupSpace::Rn (3)) != *(LiegroupSpace::R2 ()));
   BOOST_CHECK (*(LiegroupSpace::R2 ()) != *(LiegroupSpace::Rn (3)));
